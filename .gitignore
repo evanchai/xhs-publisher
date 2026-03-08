@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+
+# Environment
+.env
+.env.*
+.env.local
+.env.production
+.env.vercel
+
+# Vercel
+.vercel
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
