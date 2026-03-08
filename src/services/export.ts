@@ -2,10 +2,7 @@ import { toPng } from 'html-to-image'
 
 export async function exportSlideAsImage(element: HTMLElement): Promise<string> {
   const dataUrl = await toPng(element, {
-    width: 1080,
-    height: 1440,
-    pixelRatio: 2,
-    backgroundColor: '#000',
+    pixelRatio: 3,
   })
   return dataUrl
 }

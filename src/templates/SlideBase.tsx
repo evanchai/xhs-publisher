@@ -3,78 +3,39 @@ import type { ThemeConfig } from '../types'
 interface SlideBaseProps {
   theme: ThemeConfig
   children: React.ReactNode
-  /** Page indicator like "2/8" */
-  pageInfo?: string
+  darkBg?: boolean
+  noHeader?: boolean
+  noPadding?: boolean
 }
 
-/**
- * Base wrapper for all slides — 1080x1440 (3:4 ratio, XHS standard).
- * Rendered at 360x480 in preview, exported at 1080x1440.
- */
-export default function SlideBase({ theme, children, pageInfo }: SlideBaseProps) {
+export default function SlideBase({ theme, children, darkBg, noHeader, noPadding }: SlideBaseProps) {
+  const isDark = darkBg || theme.id === 'ink'
+  const bg = isDark ? '#18160f' : '#f6f2ec'
+
   return (
     <div
       className="slide-base"
       style={{
-        width: 360,
-        height: 480,
-        background: theme.bg,
+        width: 390,
+        aspectRatio: '3 / 4',
+        background: bg,
         position: 'relative',
         overflow: 'hidden',
-        borderRadius: 8,
-        display: 'flex',
-        flexDirection: 'column',
+        fontFamily: "'Noto Sans SC', sans-serif",
       }}
     >
-      {/* Decorative blurred circles */}
-      <div
-        style={{
-          position: 'absolute',
-          top: -60,
-          right: -60,
-          width: 200,
-          height: 200,
-          borderRadius: '50%',
-          background: theme.accentGradient,
-          opacity: 0.12,
-          filter: 'blur(60px)',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          bottom: -40,
-          left: -40,
-          width: 160,
-          height: 160,
-          borderRadius: '50%',
-          background: theme.accentGradient,
-          opacity: 0.08,
-          filter: 'blur(50px)',
-        }}
-      />
+      {!noHeader && !noPadding && children}
+      {(noHeader || noPadding) && children}
 
-      {/* Content */}
-      <div style={{ position: 'relative', zIndex: 1, flex: 1, display: 'flex', flexDirection: 'column', padding: 32 }}>
-        {children}
-      </div>
-
-      {/* Page indicator */}
-      {pageInfo && (
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 16,
-            right: 20,
-            fontSize: 11,
-            color: theme.mutedColor,
-            opacity: 0.6,
-            letterSpacing: 1,
-          }}
-        >
-          {pageInfo}
-        </div>
-      )}
+      {/* Noise texture */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E")`,
+        backgroundSize: '256px 256px',
+        pointerEvents: 'none',
+        opacity: isDark ? 0.6 : 0.3,
+      }} />
     </div>
   )
 }

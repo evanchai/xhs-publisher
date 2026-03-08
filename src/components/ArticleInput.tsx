@@ -10,28 +10,28 @@ interface Props {
 export default function ArticleInput({ value, onChange, onGenerate, loading }: Props) {
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-gray-400">
+      <label className="block text-xs text-[#6d665c] tracking-wider uppercase">
         输入文章或主题
       </label>
       <textarea
         value={value}
         onChange={e => onChange(e.target.value)}
-        placeholder="粘贴你的文章内容，或输入一个主题（如：2025年最值得学习的编程语言）..."
-        className="w-full h-48 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 resize-none focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-all text-sm leading-relaxed"
+        placeholder="粘贴你的文章内容，或输入一个主题..."
+        className="w-full h-48 bg-[#f6f2ec] border border-[#d4ccc2] rounded-lg px-4 py-3 text-[#2e2b26] placeholder-[#a69e94] resize-none focus:outline-none focus:border-[#5e7050] transition-all text-sm leading-relaxed"
       />
       <button
         onClick={onGenerate}
         disabled={loading || !value.trim()}
-        className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-600 disabled:to-gray-600 disabled:cursor-not-allowed text-white font-medium rounded-xl transition-all text-sm"
+        className="flex items-center gap-2 px-6 py-2.5 border border-[#5e7050] text-[#5e7050] hover:bg-[rgba(94,112,80,0.07)] disabled:border-[#d4ccc2] disabled:text-[#a69e94] disabled:cursor-not-allowed rounded-full transition-all text-xs tracking-wide"
       >
         {loading ? (
           <>
-            <Loader2 size={16} className="animate-spin" />
+            <Loader2 size={14} className="animate-spin" />
             AI 生成中...
           </>
         ) : (
           <>
-            <Sparkles size={16} />
+            <Sparkles size={14} />
             生成小红书帖子
           </>
         )}

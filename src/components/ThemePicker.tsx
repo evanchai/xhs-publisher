@@ -9,15 +9,15 @@ interface Props {
 export default function ThemePicker({ selected, onSelect }: Props) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs text-gray-500 mr-1">主题</span>
+      <span className="text-xs text-[#6d665c] mr-1 tracking-wider">主题</span>
       {themes.map(t => (
         <button
           key={t.id}
           onClick={() => onSelect(t)}
-          className={`w-8 h-8 rounded-lg border-2 transition-all ${
-            selected.id === t.id ? 'border-white scale-110' : 'border-transparent opacity-60 hover:opacity-100'
+          className={`w-7 h-7 rounded-full border transition-all ${
+            selected.id === t.id ? 'border-[#2e2b26] scale-110' : 'border-[#d4ccc2] opacity-60 hover:opacity-100'
           }`}
-          style={{ background: t.accentGradient }}
+          style={{ background: t.bg }}
           title={t.name}
         />
       ))}

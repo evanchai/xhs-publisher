@@ -18,19 +18,19 @@ export default function CaptionPreview({ post }: Props) {
   }
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+    <div className="bg-[#f6f2ec] border border-[#d4ccc2] rounded-lg p-5">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium text-gray-400">文案预览</h3>
+        <h3 className="text-xs text-[#6d665c] tracking-wider uppercase">文案预览</h3>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/10"
+          className="flex items-center gap-1.5 text-xs text-[#6d665c] hover:text-[#5e7050] transition-colors px-3 py-1.5 rounded-full border border-[#d4ccc2] hover:border-[#5e7050]"
         >
-          {copied ? <Check size={14} /> : <Copy size={14} />}
+          {copied ? <Check size={12} /> : <Copy size={12} />}
           {copied ? '已复制' : '复制文案'}
         </button>
       </div>
-      <div className="text-sm text-gray-300 whitespace-pre-wrap leading-relaxed">
-        <div className="font-semibold text-white mb-2">{post.title}</div>
+      <div className="text-sm text-[#2e2b26] whitespace-pre-wrap leading-relaxed">
+        <div className="font-medium mb-2" style={{ fontFamily: "'Fraunces', serif" }}>{post.title}</div>
         {post.caption}
       </div>
     </div>
