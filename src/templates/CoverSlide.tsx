@@ -8,91 +8,133 @@ interface Props {
   series: string
 }
 
-/** B1 style — giant title, extreme breathing, minimal elements */
+/** Card 01 — dark cover with badge, eyebrow, bold title, chips */
 export default function CoverSlide({ slide, theme, totalSlides, series }: Props) {
-  const isDark = theme.id === 'ink'
-  const t1 = isDark ? '#f0ebe4' : '#2e2b26'
-  const t3 = isDark ? '#6d665c' : '#a69e94'
   const g1 = '#5e7050'
-  const line = isDark ? 'rgba(212,204,194,0.15)' : '#d4ccc2'
+  const g2 = '#7a9469'
+  const chips = slide.chips ?? []
+
+  // Split title for highlight
+  const hl = slide.titleHighlight
+  let titleBefore = slide.title
+  let titleHL = ''
+  if (hl && slide.title.includes(hl)) {
+    const idx = slide.title.indexOf(hl)
+    titleBefore = slide.title.slice(0, idx)
+    titleHL = hl
+  }
 
   return (
-    <SlideBase theme={theme}>
+    <SlideBase theme={theme} darkBg series={series} pageNum={slide.index} totalPages={totalSlides}>
       <div style={{
+        padding: '28px 28px 22px',
         display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
-        padding: '44px 46px 42px', height: '100%', position: 'relative', zIndex: 1,
+        height: '100%', position: 'relative', zIndex: 1,
       }}>
-        {/* Top */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <span style={{
-            fontFamily: "'Fraunces', serif", fontWeight: 200, fontSize: '0.85rem',
-            fontStyle: 'italic', color: t1, letterSpacing: '0.02em',
+        {/* Badge */}
+        {slide.badge && (
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            padding: '5px 14px',
+            border: '1px solid rgba(94,112,80,0.3)', borderRadius: 100,
+            width: 'fit-content',
           }}>
-            ningcodes
-          </span>
-          <span style={{
-            fontFamily: "'Space Mono', monospace", fontSize: '0.48rem',
-            letterSpacing: '0.16em', color: t3,
-          }}>
-            01 / {String(totalSlides).padStart(2, '0')}
-          </span>
-        </div>
+            <div style={{ width: 5, height: 5, borderRadius: '50%', background: g2, opacity: 0.8 }} />
+            <span style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '0.44rem', letterSpacing: '0.16em',
+              textTransform: 'uppercase' as const, color: 'rgba(122,148,105,0.8)',
+            }}>
+              {slide.badge}
+            </span>
+          </div>
+        )}
 
-        {/* Center — giant title */}
+        {/* Main content */}
         <div>
-          <span style={{
-            fontFamily: "'Space Mono', monospace", fontSize: '0.52rem',
-            letterSpacing: '0.22em', textTransform: 'uppercase' as const,
-            color: g1, display: 'block', marginBottom: 14,
-          }}>
-            {series}
-          </span>
+          {slide.eyebrow && (
+            <div style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: '0.46rem', letterSpacing: '0.2em',
+              textTransform: 'uppercase' as const,
+              color: 'rgba(122,148,105,0.7)', marginBottom: 12,
+            }}>
+              {slide.eyebrow}
+            </div>
+          )}
 
           <div style={{
-            fontFamily: "'Fraunces', serif", fontWeight: 100,
-            fontSize: '4.8rem', lineHeight: 0.92, color: t1,
-            letterSpacing: '-0.03em',
+            fontFamily: "'Noto Sans SC', sans-serif",
+            fontWeight: 700, fontSize: '1.5rem',
+            lineHeight: 1.42, color: 'rgba(240,235,228,0.92)',
+            letterSpacing: '-0.01em', marginBottom: 16,
           }}>
-            {slide.title.length > 6 ? (
+            {titleHL ? (
               <>
-                {slide.title.slice(0, Math.ceil(slide.title.length / 2))}
-                <br />
-                <em style={{ fontStyle: 'italic', color: g1, fontWeight: 100 }}>
-                  {slide.title.slice(Math.ceil(slide.title.length / 2))}
-                </em>
+                {titleBefore}
+                <span style={{ color: g2 }}>{titleHL}</span>
               </>
             ) : (
-              <em style={{ fontStyle: 'italic', color: g1, fontWeight: 100 }}>
-                {slide.title}
-              </em>
+              slide.title
             )}
           </div>
 
-          <p style={{
-            marginTop: 22, fontSize: '0.78rem', color: t3,
-            fontWeight: 300, lineHeight: 1.75, maxWidth: 210,
-          }}>
-            {slide.body}
-          </p>
+          {slide.body && (
+            <p style={{
+              fontSize: '0.73rem', color: 'rgba(166,158,148,0.65)',
+              lineHeight: 1.75, fontWeight: 300, maxWidth: 300,
+            }}>
+              {slide.body}
+            </p>
+          )}
+
+          {chips.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: 6, marginTop: 18 }}>
+              {chips.map((chip, i) => (
+                <span key={i} style={{
+                  padding: '4px 12px',
+                  border: '1px solid rgba(212,204,194,0.12)', borderRadius: 100,
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: '0.42rem', letterSpacing: '0.12em',
+                  textTransform: 'uppercase' as const,
+                  color: 'rgba(166,158,148,0.45)',
+                }}>
+                  {chip}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* Bottom */}
+        {/* Bottom decorative */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <span style={{
-            fontFamily: "'Space Mono', monospace", fontSize: '0.5rem',
-            letterSpacing: '0.12em', color: t3,
-          }}>
-            ning.codes
-          </span>
+          {/* Ghost text */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {(slide.subtitle ?? '').split(/[,，]/).slice(0, 2).map((line, i) => (
+              <div key={i} style={{
+                fontFamily: "'Fraunces', serif",
+                fontWeight: 100, fontStyle: 'italic',
+                fontSize: '1.9rem', lineHeight: 1,
+                color: 'rgba(240,235,228,0.1)', letterSpacing: '0.02em',
+              }}>
+                {line.trim()}
+              </div>
+            ))}
+          </div>
+
+          {/* Ring */}
           <div style={{
-            width: 38, height: 38, borderRadius: '50%',
-            border: `1.5px solid ${line}`,
+            width: 48, height: 48, borderRadius: '50%',
+            border: '1px solid rgba(94,112,80,0.28)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <div style={{
-              width: 8, height: 8, borderRadius: '50%',
-              background: g1, opacity: 0.5,
-            }} />
+              width: 28, height: 28, borderRadius: '50%',
+              border: '1px solid rgba(94,112,80,0.45)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <div style={{ width: 7, height: 7, borderRadius: '50%', background: g1, opacity: 0.6 }} />
+            </div>
           </div>
         </div>
       </div>

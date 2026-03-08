@@ -1,19 +1,93 @@
-export type SlideType = 'cover' | 'intro' | 'steps' | 'tips' | 'checklist' | 'conclusion'
+export type SlideType = 'cover' | 'intro' | 'detail' | 'data' | 'flow' | 'conclusion'
+
+/** Bullet item with optional bold prefix */
+export interface BulletItem {
+  bold?: string
+  text: string
+}
+
+/** Stat cell — e.g. "<100 ms" */
+export interface StatItem {
+  value: string
+  unit?: string
+  label: string
+}
+
+/** Tier card — numbered block with left border */
+export interface TierItem {
+  title: string
+  body: string
+}
+
+/** Data row — for compress list / bar charts */
+export interface DataItem {
+  tag: string
+  description: string
+  size: string
+  /** 0–100, rendered as bar width percentage */
+  barPercent: number
+}
+
+/** Flow diagram node */
+export interface FlowNode {
+  label: string
+  name: string
+  variant?: 'dark' | 'accent' | 'default'
+}
+
+/** Check item with optional tag label */
+export interface CheckItem {
+  text: string
+  tag?: string
+}
+
+/** Insight row — icon + text (for conclusion) */
+export interface InsightItem {
+  icon: string
+  text: string
+}
 
 export interface SlideContent {
   type: SlideType
+  index: number
   title: string
   subtitle?: string
-  body: string
-  /** Bullet points / checklist / step items */
+  body?: string
+
+  // Cover-specific
+  badge?: string
+  eyebrow?: string
+  titleHighlight?: string
+  chips?: string[]
+
+  // Intro / Detail / Data
+  sectionTitle?: string
+  bullets?: BulletItem[]
+  stats?: StatItem[]
+  highlightText?: string
+
+  // Detail
+  tiers?: TierItem[]
+
+  // Data
+  dataItems?: DataItem[]
+
+  // Flow
+  flowNodes?: FlowNode[]
+  checkItems?: CheckItem[]
+
+  // Conclusion
+  insights?: InsightItem[]
+  quote?: string
+  tags?: string[]
+
+  // Legacy compat
   items?: string[]
   icon?: string
-  index: number
 }
 
 export interface XHSPost {
   title: string
-  /** Series name shown in page header */
   series: string
   caption: string
   hashtags: string[]

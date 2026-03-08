@@ -2,9 +2,9 @@ import { forwardRef } from 'react'
 import type { SlideContent, ThemeConfig } from '../types'
 import CoverSlide from '../templates/CoverSlide'
 import IntroSlide from '../templates/IntroSlide'
-import StepsSlide from '../templates/StepsSlide'
-import TipsSlide from '../templates/TipsSlide'
-import ChecklistSlide from '../templates/ChecklistSlide'
+import DetailSlide from '../templates/DetailSlide'
+import DataSlide from '../templates/DataSlide'
+import FlowSlide from '../templates/FlowSlide'
 import ConclusionSlide from '../templates/ConclusionSlide'
 
 interface Props {
@@ -23,12 +23,12 @@ const SlideRenderer = forwardRef<HTMLDivElement, Props>(({ slide, theme, totalSl
         return <CoverSlide {...common} />
       case 'intro':
         return <IntroSlide {...common} />
-      case 'steps':
-        return <StepsSlide {...common} />
-      case 'tips':
-        return <TipsSlide {...common} />
-      case 'checklist':
-        return <ChecklistSlide {...common} />
+      case 'detail':
+        return <DetailSlide {...common} />
+      case 'data':
+        return <DataSlide {...common} />
+      case 'flow':
+        return <FlowSlide {...common} />
       case 'conclusion':
         return <ConclusionSlide {...common} />
       default:
