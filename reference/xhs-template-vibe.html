@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ARTICLE_TITLE}} — XHS Cards</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100;0,9..144,200;0,9..144,300;1,9..144,100;1,9..144,200;1,9..144,300&family=Space+Mono:ital@0;1&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════
+   NINGCODE DESIGN TOKENS — DO NOT MODIFY
+═══════════════════════════════════ */
+:root {
+  --bg:    #f0ebe4;
+  --bg2:   #e7e0d6;
+  --bg3:   #ddd5c9;
+  --card:  #f6f2ec;
+  --t1:    #2e2b26;
+  --t2:    #6d665c;
+  --t3:    #a69e94;
+  --g1:    #5e7050;
+  --g2:    #7a9469;
+  --line:  #d4ccc2;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg3);
+  font-family: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  padding: 48px 20px 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ── 2-col grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 390px);
+  gap: 14px;
+}
+
+/* ── card base: 390×553 ── */
+.card {
+  width: 390px;
+  height: 553px;
+  position: relative;
+  overflow: hidden;
+  background: var(--card);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════
+   FOOTER (no header)
+═══════════════════════════════════ */
+.footer {
+  height: 32px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.footer-site {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.44rem;
+  letter-spacing: 0.16em;
+  color: var(--t3);
+}
+
+.footer-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.44rem;
+  letter-spacing: 0.12em;
+  color: var(--t3);
+}
+
+.footer-num em { font-style: normal; color: var(--g1); }
+
+/* ── main content canvas ── */
+.body {
+  flex: 1;
+  padding: 32px 30px 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════ */
+
+/* 小眉题 / 系列标签 */
+.tag-line {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--g1);
+  margin-bottom: 16px;
+}
+
+/* 封面/内页 中文大标题 */
+.big-title {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 700;
+  font-size: 1.65rem;
+  line-height: 1.38;
+  color: var(--t1);
+  letter-spacing: -0.01em;
+}
+
+/* em = 橄榄绿强调，不斜体 */
+.big-title em { font-style: normal; color: var(--g1); }
+
+/* Fraunces 展示型标题（英文/金句） */
+.display-title {
+  font-family: 'Fraunces', serif;
+  font-weight: 200;
+  font-size: 2.6rem;
+  line-height: 1.05;
+  color: var(--t1);
+  letter-spacing: -0.02em;
+}
+
+.display-title em { font-style: italic; color: var(--g1); }
+
+/* 正文 */
+.caption {
+  font-size: 0.78rem;
+  color: var(--t2);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.caption strong { font-weight: 500; color: var(--t1); }
+
+/* 小字注释 */
+.caption-sm {
+  font-size: 0.7rem;
+  color: var(--t3);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* 分割线 */
+.rule { height: 1px; background: var(--line); margin: 18px 0; }
+
+/* ═══════════════════════════════════
+   COMPONENTS
+═══════════════════════════════════ */
+
+/* ── 步骤列表（用了什么 / 怎么做的）── */
+.steps { display: flex; flex-direction: column; gap: 0; }
+
+.step {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.step:first-child { border-top: 1px solid var(--line); }
+
+.step-num {
+  font-family: 'Fraunces', serif;
+  font-weight: 200;
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--g2);
+  line-height: 1;
+  flex-shrink: 0;
+  width: 26px;
+  margin-top: -2px;
+}
+
+.step-title {
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--t1);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.step-desc {
+  font-size: 0.7rem;
+  color: var(--t2);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ── 引用金句框 ── */
+.quote-block {
+  background: var(--bg2);
+  border-radius: 8px;
+  padding: 16px 18px;
+}
+
+.quote-text {
+  font-family: 'Fraunces', serif;
+  font-weight: 200;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--t1);
+}
+
+.quote-text em { font-style: italic; color: var(--g1); }
+
+/* ── checklist（怎么运作的）── */
+.checklist { display: flex; flex-direction: column; gap: 0; }
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.check:first-child { border-top: 1px solid var(--line); }
+
+.check-mark {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--g1);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 0.48rem; color: var(--g1);
+  margin-top: 1px;
+}
+
+.check-text {
+  font-size: 0.74rem; color: var(--t1);
+  font-weight: 300; line-height: 1.5; flex: 1;
+}
+
+.check-text strong { font-weight: 500; }
+
+/* ── 数字亮点行（效果展示）── */
+.hl-row {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.hl-cell {
+  flex: 1;
+  padding: 14px 14px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hl-cell:last-child { border-right: none; }
+
+.hl-val {
+  font-family: 'Fraunces', serif;
+  font-weight: 200;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--t1);
+}
+
+.hl-val em { font-style: italic; color: var(--g1); }
+
+.hl-label {
+  font-size: 0.65rem;
+  color: var(--t3);
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+/* ── 工具胶囊（第06张）── */
+.tool-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tool-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--t1);
+}
+
+.tool-pill .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--g1); flex-shrink: 0;
+}
+
+/* ── 装饰叶片 SVG ── */
+.deco-leaf {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.12;
+}
+
+/* ── 幽灵数字背景 ── */
+.ghost-num {
+  position: absolute;
+  font-family: 'Fraunces', serif;
+  font-weight: 100;
+  font-size: 11rem;
+  line-height: 1;
+  color: rgba(46,43,38,0.04);
+  letter-spacing: -0.04em;
+  pointer-events: none;
+  user-select: none;
+}
+</style>
+</head>
+<body>
+
+<div class="grid">
+
+<!-- ════════════════════════════════
+     CARD 01 — 封面
+     替换: {{COVER_TAG}} {{TITLE_L1}} {{TITLE_HIGHLIGHT}} {{COVER_SUB}} {{CAT1}} {{CAT2}}
+     背景: --bg
+════════════════════════════════ -->
+<div class="card" style="background:var(--bg);">
+
+  <!-- 装饰叶片（右下角） -->
+  <svg class="deco-leaf" style="right:-10px;bottom:50px;" width="140" height="140" viewBox="0 0 140 140" fill="none">
+    <path d="M20 120 Q70 20 130 10 Q110 70 20 120Z" fill="var(--g1)"/>
+    <path d="M20 120 Q75 65 130 10" stroke="var(--bg)" stroke-width="1.5" fill="none"/>
+  </svg>
+
+  <div class="body" style="justify-content:space-between;">
+
+    <div>
+      <!-- 系列标签，如 "vibe coding 日记 · 01" -->
+      <div class="tag-line">{{COVER_TAG}}</div>
+
+      <!-- 封面主标题，口语化，带情绪
+           格式: 问题 + 意外解法 + 疑问
+           示例: 小猫<em>又</em>尿沙发了，<br>我 vibe 了一个<br>家庭智能摄像头？ -->
+      <div class="big-title" style="font-size:1.75rem;margin-bottom:20px;">
+        {{TITLE_L1}}<br>
+        <em>{{TITLE_HIGHLIGHT}}</em><br>
+        {{TITLE_L3}}
+      </div>
+
+      <!-- 副标题：一句话说清楚这篇讲什么，降低门槛 -->
+      <p class="caption">{{COVER_SUB}}</p>
+    </div>
+
+    <!-- 底部：今日主角（猫名/项目名等） -->
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="height:1px;background:var(--line);"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div class="caption-sm">{{COVER_BOTTOM_LABEL}}</div>
+        <div style="display:flex;gap:8px;">
+          <span style="font-family:'Fraunces',serif;font-weight:200;font-style:italic;font-size:1.1rem;color:var(--t2);">{{COVER_ITEM1}}</span>
+          <span style="font-family:'Fraunces',serif;font-weight:200;font-style:italic;font-size:1.1rem;color:var(--t2);">{{COVER_ITEM2}}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer" style="background:var(--bg);">
+    <span class="footer-site">ning.codes</span>
+    <span class="footer-num"><em>01</em> / 06</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     CARD 02 — 故事起因
+     替换: {{P2_DISPLAY_TITLE}} {{P2_STORY}} {{P2_QUOTE}} {{P2_BRIDGE}}
+     背景: --card
+════════════════════════════════ -->
+<div class="card" style="background:var(--card);">
+
+  <div class="body">
+
+    <div class="tag-line">{{P2_TAG}}</div>
+
+    <!-- Fraunces 展示标题，一句话概括痛点
+         示例: 问题<br>很<em>具体。</em> -->
+    <div class="display-title" style="margin-bottom:20px;">
+      {{P2_TITLE_L1}}<br>
+      {{P2_TITLE_L2}}<em>{{P2_TITLE_EM}}</em>
+    </div>
+
+    <!-- 故事正文：具体描述痛点，让读者产生共鸣 -->
+    <p class="caption" style="margin-bottom:18px;">{{P2_STORY}}</p>
+
+    <!-- 引用框：一句话道出核心动机 -->
+    <div class="quote-block" style="margin-bottom:18px;">
+      <div class="quote-text">{{P2_QUOTE}}</div>
+    </div>
+
+    <!-- 过渡：为什么不用现成方案，引出自己动手 -->
+    <p class="caption">{{P2_BRIDGE}}</p>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-site">ning.codes</span>
+    <span class="footer-num"><em>02</em> / 06</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     CARD 03 — 用了什么
+     替换: 3个 step 的 title 和 desc，用大白话
+     背景: --bg2
+════════════════════════════════ -->
+<div class="card" style="background:var(--bg2);">
+
+  <div class="body">
+
+    <div class="tag-line">{{P3_TAG}}</div>
+
+    <!-- 标题：轻松口吻 -->
+    <div class="big-title" style="margin-bottom:18px;">
+      {{P3_TITLE_L1}}<br>
+      <em>{{P3_TITLE_EM}}</em>
+    </div>
+
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <!-- 工具名（大白话，不是技术名词） -->
+          <div class="step-title">{{STEP1_TITLE}}</div>
+          <!-- 解释这个工具是什么，能做什么，用比喻 -->
+          <div class="step-desc">{{STEP1_DESC}}</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">{{STEP2_TITLE}}</div>
+          <div class="step-desc">{{STEP2_DESC}}</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">{{STEP3_TITLE}}</div>
+          <div class="step-desc">{{STEP3_DESC}}</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer" style="background:var(--bg2);">
+    <span class="footer-site">ning.codes</span>
+    <span class="footer-num"><em>03</em> / 06</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     CARD 04 — 怎么运作的
+     替换: 比喻标题、4条 checklist、底部注释
+     背景: --card
+════════════════════════════════ -->
+<div class="card" style="background:var(--card);">
+
+  <!-- 幽灵数字装饰 -->
+  <div class="ghost-num" style="right:-20px;top:10px;">04</div>
+
+  <div class="body" style="position:relative;z-index:1;">
+
+    <div class="tag-line">{{P4_TAG}}</div>
+
+    <!-- 标题：用一个生动比喻 -->
+    <div class="big-title" style="margin-bottom:20px;">
+      {{P4_TITLE_L1}}<br>
+      <em>{{P4_TITLE_EM}}</em>
+    </div>
+
+    <!-- 一句铺垫 -->
+    <p class="caption" style="margin-bottom:18px;">{{P4_INTRO}}</p>
+
+    <!-- 4步流程，用口语化描述 -->
+    <div class="checklist">
+      <div class="check">
+        <div class="check-mark">●</div>
+        <span class="check-text">{{CHECK1}}</span>
+      </div>
+      <div class="check">
+        <div class="check-mark">●</div>
+        <span class="check-text">{{CHECK2}}</span>
+      </div>
+      <div class="check">
+        <div class="check-mark">●</div>
+        <span class="check-text">{{CHECK3}}</span>
+      </div>
+      <div class="check">
+        <div class="check-mark">●</div>
+        <span class="check-text">{{CHECK4}}</span>
+      </div>
+    </div>
+
+    <!-- 底部补充：成本/供电/隐私等亮点 -->
+    <div style="margin-top:16px;" class="caption-sm">{{P4_FOOTNOTE}}</div>
+
+  </div>
+
+  <div class="footer">
+    <span class="footer-site">ning.codes</span>
+    <span class="footer-num"><em>04</em> / 06</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     CARD 05 — 效果如何
+     替换: 标题、故事、3个数字格、quote
+     背景: --bg
+════════════════════════════════ -->
+<div class="card" style="background:var(--bg);">
+
+  <div class="body">
+
+    <div class="tag-line">{{P5_TAG}}</div>
+
+    <!-- 标题：具体事件感，"第一天就抓到了" -->
+    <div class="big-title" style="margin-bottom:16px;">
+      {{P5_TITLE_L1}}<br>
+      <em>{{P5_TITLE_EM}}</em>
+    </div>
+
+    <!-- 具体的故事场景 -->
+    <p class="caption" style="margin-bottom:18px;">{{P5_STORY}}</p>
+
+    <!-- 3格数字：具体指标 + 大白话标签 -->
+    <div class="hl-row" style="margin-bottom:18px;">
+      <div class="hl-cell">
+        <div class="hl-val"><em>{{STAT1_VAL}}</em></div>
+        <div class="hl-label">{{STAT1_LABEL}}</div>
+      </div>
+      <div class="hl-cell">
+        <div class="hl-val"><em>{{STAT2_VAL}}</em></div>
+        <div class="hl-label">{{STAT2_LABEL}}</div>
+      </div>
+      <div class="hl-cell">
+        <div class="hl-val"><em>{{STAT3_VAL}}</em></div>
+        <div class="hl-label">{{STAT3_LABEL}}</div>
+      </div>
+    </div>
+
+    <!-- 引用：最重要的一个感受/价值 -->
+    <div class="quote-block">
+      <div class="quote-text" style="font-size:0.95rem;">{{P5_QUOTE}}</div>
+    </div>
+
+  </div>
+
+  <div class="footer" style="background:var(--bg);">
+    <span class="footer-site">ning.codes</span>
+    <span class="footer-num"><em>05</em> / 06</span>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════
+     CARD 06 — 你也可以做
+     替换: 标题、正文、3个工具胶囊、结尾引导语
+     背景: --bg2
+════════════════════════════════ -->
+<div class="card" style="background:var(--bg2);">
+
+  <!-- 装饰叶片（右上角翻转） -->
+  <svg class="deco-leaf" style="right:-8px;top:-8px;transform:rotate(120deg);" width="120" height="120" viewBox="0 0 140 140" fill="none">
+    <path d="M20 120 Q70 20 130 10 Q110 70 20 120Z" fill="var(--g1)"/>
+    <path d="M20 120 Q75 65 130 10" stroke="var(--bg2)" stroke-width="1.5" fill="none"/>
+  </svg>
+
+  <div class="body" style="justify-content:space-between;position:relative;z-index:1;">
+
+    <div>
+      <div class="tag-line">{{P6_TAG}}</div>
+
+      <!-- 标题：降低门槛，让人觉得自己也能做 -->
+      <div class="display-title" style="margin-bottom:20px;font-size:2.2rem;">
+        {{P6_TITLE_L1}}<br>
+        <em>{{P6_TITLE_EM}}</em>
+      </div>
+
+      <!-- 鼓励文字 -->
+      <p class="caption" style="margin-bottom:18px;">{{P6_BODY}}</p>
+
+      <!-- 工具胶囊：3个核心工具，大白话名称 -->
+      <div class="tool-row" style="margin-bottom:18px;">
+        <div class="tool-pill"><div class="dot"></div>{{TOOL1}}</div>
+        <div class="tool-pill"><div class="dot"></div>{{TOOL2}}</div>
+        <div class="tool-pill"><div class="dot"></div>{{TOOL3}}</div>
+      </div>
+    </div>
+
+    <!-- 底部收尾：预告下期 + 引导关注 -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="rule" style="margin:0;"></div>
+      <p class="caption-sm" style="line-height:1.75;">
+        {{P6_PREVIEW}}<br>
+        <span style="color:var(--g1);font-weight:400;">{{P6_CTA}}</span>
+      </p>
+    </div>
+
+  </div>
+
+  <div class="footer" style="background:var(--bg2);">
+    <span class="footer-site">ning.codes</span>
+    <span class="footer-num"><em>06</em> / 06</span>
+  </div>
+</div>
+
+</div><!-- /grid -->
+</body>
+</html>
+
+<!--
+════════════════════════════════════════════════════════════
+PLACEHOLDER 速查表
+════════════════════════════════════════════════════════════
+
+CARD 01 封面
+  {{ARTICLE_TITLE}}     页面 <title>，文章标题
+  {{COVER_TAG}}         eyebrow，如 "vibe coding 日记 · 01"
+  {{TITLE_L1}}          标题第1行，如 "小猫"
+  {{TITLE_HIGHLIGHT}}   标题中绿色强调词，如 "又"
+  {{TITLE_L3}}          标题第3行，如 "家庭智能摄像头？"
+  {{COVER_SUB}}         副标题，1-2句，降低门槛
+  {{COVER_BOTTOM_LABEL}} 底部左侧标签，如 "今日主角"
+  {{COVER_ITEM1}}       底部 Fraunces italic 文字1，如 "萨摩"
+  {{COVER_ITEM2}}       底部 Fraunces italic 文字2，如 "小白"
+
+CARD 02 故事起因
+  {{P2_TAG}}            如 "起因"
+  {{P2_TITLE_L1}}       如 "问题"
+  {{P2_TITLE_L2}}       如 "很"
+  {{P2_TITLE_EM}}       斜体强调词，如 "具体。"
+  {{P2_STORY}}          故事正文，≤3句，具体描述痛点
+  {{P2_QUOTE}}          引用金句，道出核心动机
+  {{P2_BRIDGE}}         过渡段，为什么不用现成方案
+
+CARD 03 用了什么
+  {{P3_TAG}}            如 "用了啥"
+  {{P3_TITLE_L1}}       如 "三样东西，"
+  {{P3_TITLE_EM}}       如 "拼出来的。"
+  {{STEP1_TITLE}}       工具1名称（大白话）
+  {{STEP1_DESC}}        工具1解释，≤2句，可用比喻
+  {{STEP2_TITLE}}       工具2名称
+  {{STEP2_DESC}}        工具2解释
+  {{STEP3_TITLE}}       工具3名称
+  {{STEP3_DESC}}        工具3解释
+
+CARD 04 怎么运作的
+  {{P4_TAG}}            如 "怎么运作的"
+  {{P4_TITLE_L1}}       比喻标题前半，如 "像个"
+  {{P4_TITLE_EM}}       比喻高亮，如 "永不睡觉的保安。"
+  {{P4_INTRO}}          一句铺垫，如 "摄像头每秒扫两次画面，99% 的时候啥也不做——完全静默。"
+  {{CHECK1}}            第1步，格式 "触发条件 → 动作 → <strong>关键结果</strong>"
+  {{CHECK2}}            第2步
+  {{CHECK3}}            第3步
+  {{CHECK4}}            第4步
+  {{P4_FOOTNOTE}}       底部补充，成本/供电/隐私亮点
+
+CARD 05 效果如何
+  {{P5_TAG}}            如 "效果"
+  {{P5_TITLE_L1}}       如 "第一天就"
+  {{P5_TITLE_EM}}       如 "抓到了。"
+  {{P5_STORY}}          具体事件，≤3句，有画面感
+  {{STAT1_VAL}}         数字1，如 "<2秒"（用 em 包裹变绿）
+  {{STAT1_LABEL}}       数字1说明（大白话）
+  {{STAT2_VAL}}         数字2
+  {{STAT2_LABEL}}       数字2说明
+  {{STAT3_VAL}}         数字3
+  {{STAT3_LABEL}}       数字3说明
+  {{P5_QUOTE}}          最重要的一个感受，可包含 <em> 强调
+
+CARD 06 你也可以做
+  {{P6_TAG}}            如 "你也可以做"
+  {{P6_TITLE_L1}}       如 "不会写代码，"
+  {{P6_TITLE_EM}}       如 "没关系。"
+  {{P6_BODY}}           鼓励段落，说明自己也是用 AI 辅助完成的
+  {{TOOL1}}             工具胶囊1（大白话）
+  {{TOOL2}}             工具胶囊2
+  {{TOOL3}}             工具胶囊3
+  {{P6_PREVIEW}}        预告下期内容
+  {{P6_CTA}}            引导关注，如 "关注 ning.codes 不迷路 ↗"
+
+════════════════════════════════════════════════════════════
+-->

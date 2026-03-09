@@ -1,106 +1,132 @@
-export type SlideType = 'cover' | 'intro' | 'detail' | 'data' | 'flow' | 'conclusion'
+export type CardMode = 'vibe' | 'handbook'
 
-/** Bullet item with optional bold prefix */
-export interface BulletItem {
-  bold?: string
-  text: string
+/** Background color rotation — no adjacent cards share same bg */
+export const BG_CYCLE = ['#f0ebe4', '#f6f2ec', '#e7e0d6', '#f6f2ec', '#f0ebe4', '#e7e0d6'] as const
+
+// ── Vibe Diary mode ──
+export type VibeSlideType = 'vibe-cover' | 'vibe-story' | 'vibe-tools' | 'vibe-how' | 'vibe-results' | 'vibe-outro'
+
+// ── Knowledge Handbook mode ──
+export type HandbookSlideType = 'hb-cover' | 'hb-intro' | 'hb-detail' | 'hb-data' | 'hb-flow' | 'hb-conclusion'
+
+export type SlideType = VibeSlideType | HandbookSlideType
+
+/** Step item for tools page */
+export interface StepItem {
+  title: string
+  desc: string
 }
 
-/** Stat cell — e.g. "<100 ms" */
+/** Stat cell for data display */
 export interface StatItem {
   value: string
-  unit?: string
   label: string
 }
 
-/** Tier card — numbered block with left border */
+/** Check item */
+export interface CheckItem {
+  text: string
+  tag?: string
+}
+
+/** Tier card */
 export interface TierItem {
   title: string
   body: string
 }
 
-/** Data row — for compress list / bar charts */
+/** Data bar item */
 export interface DataItem {
   tag: string
   description: string
   size: string
-  /** 0–100, rendered as bar width percentage */
   barPercent: number
 }
 
-/** Flow diagram node */
+/** Flow node */
 export interface FlowNode {
   label: string
   name: string
   variant?: 'dark' | 'accent' | 'default'
 }
 
-/** Check item with optional tag label */
-export interface CheckItem {
-  text: string
-  tag?: string
-}
-
-/** Insight row — icon + text (for conclusion) */
+/** Insight item (conclusion) */
 export interface InsightItem {
   icon: string
   text: string
 }
 
+/** Bullet item */
+export interface BulletItem {
+  bold?: string
+  text: string
+}
+
+/**
+ * Unified slide content — flexible fields used by both modes.
+ * Each template reads only the fields it needs.
+ */
 export interface SlideContent {
   type: SlideType
   index: number
-  title: string
-  subtitle?: string
+
+  // ── Shared ──
+  tagLine?: string
+  title?: string
+  titleEm?: string
   body?: string
 
-  // Cover-specific
+  // ── Vibe Cover ──
+  coverSub?: string
+  bottomLabel?: string
+  bottomItems?: string[]
+
+  // ── Vibe Story ──
+  displayTitleL1?: string
+  displayTitleL2?: string
+  displayTitleEm?: string
+  story?: string
+  quote?: string
+  quoteEm?: string
+  bridge?: string
+
+  // ── Vibe Tools / Handbook Detail ──
+  steps?: StepItem[]
+  tiers?: TierItem[]
+
+  // ── Vibe How ──
+  checks?: string[]
+  footnote?: string
+
+  // ── Vibe Results / Handbook Intro ──
+  stats?: StatItem[]
+
+  // ── Vibe Outro ──
+  tools?: string[]
+  preview?: string
+  cta?: string
+
+  // ── Handbook-specific ──
+  sectionTitle?: string
+  subtitle?: string
+  bullets?: BulletItem[]
+  highlightText?: string
+  dataItems?: DataItem[]
+  flowNodes?: FlowNode[]
+  checkItems?: CheckItem[]
+  insights?: InsightItem[]
+  tags?: string[]
   badge?: string
   eyebrow?: string
   titleHighlight?: string
   chips?: string[]
-
-  // Intro / Detail / Data
-  sectionTitle?: string
-  bullets?: BulletItem[]
-  stats?: StatItem[]
-  highlightText?: string
-
-  // Detail
-  tiers?: TierItem[]
-
-  // Data
-  dataItems?: DataItem[]
-
-  // Flow
-  flowNodes?: FlowNode[]
-  checkItems?: CheckItem[]
-
-  // Conclusion
-  insights?: InsightItem[]
-  quote?: string
-  tags?: string[]
-
-  // Legacy compat
-  items?: string[]
-  icon?: string
 }
 
 export interface XHSPost {
+  mode: CardMode
   title: string
   series: string
   caption: string
   hashtags: string[]
   slides: SlideContent[]
-}
-
-export interface ThemeConfig {
-  id: string
-  name: string
-  bg: string
-  cardBg: string
-  textColor: string
-  mutedColor: string
-  accentColor: string
-  accentGradient: string
 }

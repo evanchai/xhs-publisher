@@ -3,13 +3,13 @@ import SlideBase, { T1, T2, G1, LINE } from './SlideBase'
 
 interface Props { slide: SlideContent; bg: string }
 
-/** Handbook Card 06 — Conclusion: display title + story/body + quote + tool pills + preview */
-export default function ConclusionSlide({ slide, bg }: Props) {
-  const tools = slide.tools ?? slide.chips ?? []
+/** Vibe Card 06 — Outro: display title + body + tool pills + preview + CTA + leaf */
+export default function VibeOutro({ slide, bg }: Props) {
+  const tools = slide.tools ?? []
 
   return (
     <SlideBase pageNum={6} totalPages={6} bg={bg}>
-      {/* Decorative leaf (top-right) */}
+      {/* Decorative leaf (top-right, rotated) */}
       <svg style={{
         position: 'absolute', right: -8, top: -8,
         pointerEvents: 'none', opacity: 0.12,
@@ -24,6 +24,7 @@ export default function ConclusionSlide({ slide, bg }: Props) {
         flex: 1, position: 'relative', zIndex: 1,
       }}>
         <div>
+          {/* Tag line */}
           <div style={{
             fontFamily: "'Space Mono', monospace",
             fontSize: '0.5rem', letterSpacing: '0.2em',
@@ -33,7 +34,7 @@ export default function ConclusionSlide({ slide, bg }: Props) {
             {slide.tagLine ?? '你也可以做'}
           </div>
 
-          {/* Display title */}
+          {/* Display title (Fraunces) */}
           <div style={{
             fontFamily: "'Fraunces', serif",
             fontWeight: 200, fontSize: '2.2rem',
@@ -49,7 +50,10 @@ export default function ConclusionSlide({ slide, bg }: Props) {
 
           {/* Body */}
           {slide.body && (
-            <p style={{ fontSize: '0.78rem', color: T2, lineHeight: 1.8, fontWeight: 300, marginBottom: 18 }}>
+            <p style={{
+              fontSize: '0.78rem', color: T2, lineHeight: 1.8, fontWeight: 300,
+              marginBottom: 18,
+            }}>
               {slide.body}
             </p>
           )}
@@ -60,7 +64,8 @@ export default function ConclusionSlide({ slide, bg }: Props) {
               {tools.map((tool, i) => (
                 <div key={i} style={{
                   display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '7px 14px', border: `1px solid ${LINE}`, borderRadius: 100,
+                  padding: '7px 14px',
+                  border: `1px solid ${LINE}`, borderRadius: 100,
                   fontSize: '0.72rem', fontWeight: 300, color: T1,
                 }}>
                   <div style={{ width: 5, height: 5, borderRadius: '50%', background: G1, flexShrink: 0 }} />
@@ -71,7 +76,7 @@ export default function ConclusionSlide({ slide, bg }: Props) {
           )}
         </div>
 
-        {/* Bottom */}
+        {/* Bottom: preview + CTA */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ height: 1, background: LINE }} />
           <p style={{ fontSize: '0.7rem', color: '#a69e94', lineHeight: 1.75, fontWeight: 300 }}>

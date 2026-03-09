@@ -1,11 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { Download, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
-import type { XHSPost, ThemeConfig } from './types'
-import { themes } from './services/themes'
+import type { XHSPost } from './types'
 import { generateXHSPost } from './services/ai'
 import { downloadAllSlides, exportSlideAsImage, downloadImage } from './services/export'
 import ArticleInput from './components/ArticleInput'
-import ThemePicker from './components/ThemePicker'
 import SlideRenderer from './components/SlideRenderer'
 import CaptionPreview from './components/CaptionPreview'
 
@@ -28,7 +26,6 @@ const DEFAULT_ARTICLE = `边缘 AI 宠物监控：用树莓派 AI 摄像头打�
 export default function App() {
   const [article, setArticle] = useState(DEFAULT_ARTICLE)
   const [post, setPost] = useState<XHSPost | null>(null)
-  const [theme, setTheme] = useState<ThemeConfig>(themes[0])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [exporting, setExporting] = useState(false)
@@ -105,18 +102,30 @@ export default function App() {
             </h1>
           </div>
           {post && (
-            <button
-              onClick={handleReset}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                fontSize: 11, color: '#6d665c',
-                border: '1px solid #d4ccc2', borderRadius: 100,
-                padding: '6px 16px', background: 'transparent', cursor: 'pointer',
-              }}
-            >
-              <RotateCcw size={11} />
-              重新生成
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              {/* Mode badge */}
+              <span style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: '0.44rem', letterSpacing: '0.16em',
+                textTransform: 'uppercase' as const,
+                color: '#5e7050', padding: '4px 10px',
+                border: '1px solid rgba(94,112,80,0.3)', borderRadius: 100,
+              }}>
+                {post.mode === 'vibe' ? 'Vibe Diary' : 'Handbook'}
+              </span>
+              <button
+                onClick={handleReset}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  fontSize: 11, color: '#6d665c',
+                  border: '1px solid #d4ccc2', borderRadius: 100,
+                  padding: '6px 16px', background: 'transparent', cursor: 'pointer',
+                }}
+              >
+                <RotateCcw size={11} />
+                重新生成
+              </button>
+            </div>
           )}
         </div>
       </header>
@@ -147,8 +156,7 @@ export default function App() {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
             {/* Toolbar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
-              <ThemePicker selected={theme} onSelect={setTheme} />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16 }}>
               <button
                 onClick={handleDownloadAll}
                 disabled={exporting}
@@ -166,11 +174,9 @@ export default function App() {
               </button>
             </div>
 
-            {/* Slide viewer: active card centered */}
+            {/* Slide viewer */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
-              {/* Navigation + card */}
               <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-                {/* Left arrow */}
                 <button
                   onClick={() => navigate(-1)}
                   disabled={activeSlide === 0}
@@ -185,16 +191,11 @@ export default function App() {
                   <ChevronLeft size={16} color="#6d665c" />
                 </button>
 
-                {/* The card */}
                 <div style={{ position: 'relative' }}>
                   <SlideRenderer
                     ref={el => { slideRefs.current[activeSlide] = el }}
                     slide={post.slides[activeSlide]}
-                    theme={theme}
-                    totalSlides={post.slides.length}
-                    series={post.series}
                   />
-                  {/* Download overlay */}
                   <button
                     onClick={() => handleDownloadOne(activeSlide)}
                     style={{
@@ -212,7 +213,6 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* Right arrow */}
                 <button
                   onClick={() => navigate(1)}
                   disabled={activeSlide === post.slides.length - 1}
@@ -235,12 +235,10 @@ export default function App() {
                     key={i}
                     onClick={() => setActiveSlide(i)}
                     style={{
-                      width: i === activeSlide ? 20 : 6,
-                      height: 6,
+                      width: i === activeSlide ? 20 : 6, height: 6,
                       borderRadius: 3,
                       background: i === activeSlide ? '#5e7050' : '#d4ccc2',
-                      border: 'none',
-                      cursor: 'pointer',
+                      border: 'none', cursor: 'pointer',
                       transition: 'all 0.3s ease',
                     }}
                   />
@@ -248,21 +246,17 @@ export default function App() {
               </div>
             </div>
 
-            {/* Hidden slides for export (off-screen, full render for each) */}
+            {/* Hidden slides for export */}
             <div style={{ position: 'absolute', left: -9999, top: 0 }}>
               {post.slides.map((slide, i) => (
                 <SlideRenderer
                   key={i}
                   ref={el => { slideRefs.current[i] = el }}
                   slide={slide}
-                  theme={theme}
-                  totalSlides={post.slides.length}
-                  series={post.series}
                 />
               ))}
             </div>
 
-            {/* Caption */}
             <CaptionPreview post={post} />
           </div>
         )}
