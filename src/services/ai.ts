@@ -135,11 +135,18 @@ const SYSTEM_PROMPT = `你是小红书图文卡片的内容架构师。用户给
   ]
 }`
 
-export async function generateXHSPost(article: string): Promise<XHSPost> {
+export async function generateXHSPost(
+  article: string,
+  modeOverride?: 'auto' | 'vibe' | 'handbook',
+): Promise<XHSPost> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined
   if (!apiKey) {
     throw new Error('请在 .env.local 中配置 VITE_GEMINI_API_KEY')
   }
+
+  const modeHint = modeOverride && modeOverride !== 'auto'
+    ? `\n\n**强制使用 ${modeOverride} 模式，不要自动判断。**`
+    : ''
 
   const { GoogleGenAI } = await import('@google/genai')
   const ai = new GoogleGenAI({ apiKey })
@@ -149,7 +156,7 @@ export async function generateXHSPost(article: string): Promise<XHSPost> {
     contents: [
       {
         role: 'user',
-        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n请将以下内容转化为小红书知识手册卡组：\n\n${article}` }],
+        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n请将以下内容转化为小红书知识手册卡组：${modeHint}\n\n${article}` }],
       },
     ],
     config: {

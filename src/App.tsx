@@ -30,13 +30,14 @@ export default function App() {
   const [error, setError] = useState('')
   const [exporting, setExporting] = useState(false)
   const [activeSlide, setActiveSlide] = useState(0)
+  const [mode, setMode] = useState<'auto' | 'vibe' | 'handbook'>('auto')
   const slideRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const handleGenerate = useCallback(async (text?: string) => {
     setLoading(true)
     setError('')
     try {
-      const result = await generateXHSPost(text ?? article)
+      const result = await generateXHSPost(text ?? article, mode)
       setPost(result)
       setActiveSlide(0)
       slideRefs.current = []
@@ -45,7 +46,7 @@ export default function App() {
     } finally {
       setLoading(false)
     }
-  }, [article])
+  }, [article, mode])
 
   // Auto-generate on mount
   useEffect(() => {
@@ -141,6 +142,34 @@ export default function App() {
                 ARTICLE → AI → CARD SET
               </p>
             </div>
+            {/* Mode selector */}
+            <div style={{
+              display: 'flex', justifyContent: 'center', gap: 0,
+              marginBottom: 20,
+              border: '1px solid #d4ccc2', borderRadius: 100,
+              overflow: 'hidden', width: 'fit-content',
+              margin: '0 auto 20px',
+            }}>
+              {(['auto', 'vibe', 'handbook'] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMode(m)}
+                  style={{
+                    padding: '7px 18px',
+                    fontSize: '0.7rem', letterSpacing: '0.06em',
+                    fontFamily: "'Space Mono', monospace",
+                    textTransform: 'uppercase' as const,
+                    border: 'none', cursor: 'pointer',
+                    background: mode === m ? '#5e7050' : 'transparent',
+                    color: mode === m ? '#f0ebe4' : '#6d665c',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {m === 'auto' ? '自动' : m === 'vibe' ? 'Vibe 日记' : '知识手册'}
+                </button>
+              ))}
+            </div>
+
             <ArticleInput
               value={article}
               onChange={setArticle}
