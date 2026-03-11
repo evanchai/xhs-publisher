@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { Download, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { XHSPost } from './types'
 import { generateXHSPost } from './services/ai'
@@ -7,21 +7,21 @@ import ArticleInput from './components/ArticleInput'
 import SlideRenderer from './components/SlideRenderer'
 import CaptionPreview from './components/CaptionPreview'
 
-const DEFAULT_ARTICLE = `边缘 AI 宠物监控：用树莓派 AI 摄像头打造猫咪沙发警报系统
+const DEFAULT_ARTICLE = `小白又尿沙发了，作为铲屎官我想搞清楚它到底啥时候尿的、多频繁
 
-不靠云端 GPU、不靠模型训练。一个 IMX500 芯片做边缘推理，一个 Gemini 做精细判断，一个 Redis 做状态中继——从硬件到全栈，搭建一个实时猫咪监控系统。
+家里两猫一狗，小白老是偷偷上沙发尿。买过摄像头，但普通摄像头只能事后回放，等我看到的时候沙发已经湿了。我想实时知道谁上了沙发、在干嘛。
 
-为什么用边缘 AI：家里两只猫——萨摩和小白——老是偷偷上沙发。需要实时监控+即时告警，但传统方案延迟高、依赖网络、隐私问题。IMX500 芯片直接在传感器上跑神经网络，推理延迟 <100ms，不需要上传原始图像到云端。
+于是我 vibe coding 了一个智能宠物监控系统。
 
-两级检测架构：第一级 EfficientDet Lite0 在 IMX500 芯片上运行，零延迟低功耗（<5W），输出 bounding boxes 和 confidence scores。阈值设为 0.3，宁可误报不漏报。第二级 Gemini 2.5 Flash 视觉分析，只在第一级触发时调用，判断是哪只猫、在不在沙发上、在做什么。5 分钟冷却期避免重复调用。
+一个树莓派 + 一个 AI 摄像头，插上 USB 就能工作。摄像头自带 AI 芯片，不用联网就能认出猫和狗，每秒扫两次。发现有动物上沙发，自动拍照发给 AI 判断是哪只、在干嘛。
 
-图像压缩三层设计：原始 12MP 用于 Discord 告警；960px/q65 约 60KB 推送 Redis 做实时预览；800px/q70 约 70KB 存事件缩略图。最初没压缩，20 条事件 48MB 直接让 Vercel 超时。
+然后 Discord 直接弹消息通知我，附带截图和 AI 分析："小白正在沙发上趴着，看起来要睡觉"。从检测到通知不到 2 秒。
 
-实时数据流：Pi → Redis（3 个 key）→ Vercel API → React Dashboard。Redis TTL 本身就是心跳机制——Pi 断电后 snapshot 10 秒过期，Dashboard 自动显示 Offline。
+每天还自动生成一份日报，统计当天每只动物的活动——谁上了几次沙发、什么时间段最活跃。
 
-模型升级：从 nanodet（cat 置信度仅 0.15-0.27）切换到 EfficientDet Lite0（置信度稳定 0.4-0.7），只需改一行模型路径。
+整套系统功耗不到 5W，一根充电线供电，成本不到 500 块。代码全部 vibe coding 完成。
 
-核心洞察：不要在边缘和云端之间二选一，让它们各做最擅长的事。IMX500 零成本每秒扫描两次，99% 时间静默运行，检测到猫才唤醒 Gemini。整个系统功耗不到 5W，一根 USB-C 线供电。`
+现在每天看日报已经成了习惯，终于知道它们一天都在干嘛了。下期分享怎么搭。`
 
 export default function App() {
   const [article, setArticle] = useState(DEFAULT_ARTICLE)
@@ -48,10 +48,11 @@ export default function App() {
     }
   }, [article, mode])
 
-  // Auto-generate on mount
-  useEffect(() => {
-    handleGenerate(DEFAULT_ARTICLE)
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Generate when mode is selected (not on mount)
+  const handleModeSelect = useCallback((m: 'auto' | 'vibe' | 'handbook') => {
+    setMode(m)
+    handleGenerate(undefined)
+  }, [handleGenerate])
 
   const handleDownloadAll = useCallback(async () => {
     if (!post) return
@@ -153,7 +154,7 @@ export default function App() {
               {(['auto', 'vibe', 'handbook'] as const).map((m) => (
                 <button
                   key={m}
-                  onClick={() => setMode(m)}
+                  onClick={() => handleModeSelect(m)}
                   style={{
                     padding: '7px 18px',
                     fontSize: '0.7rem', letterSpacing: '0.06em',
