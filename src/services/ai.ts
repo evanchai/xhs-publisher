@@ -187,7 +187,30 @@ export async function refineXHSPost(
     contents: [
       {
         role: 'user',
-        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n以下是当前生成的小红书卡组 JSON：\n\n${JSON.stringify(currentPost, null, 2)}\n\n---\n\n用户对当前结果的修改意见：\n${feedback}\n\n## 修改规则\n\n1. 严格按用户意见修改，不要自由发挥\n2. 用户说"某个内容分成两页"→ 把该内容拆到两张卡片中，重新分配 6 张卡的内容结构\n3. 用户说"改标题/改文案"→ 只改对应字段的文字\n4. 用户说"加上XX信息"→ 在对应卡片中补充该信息\n5. 保持 mode 不变，固定 6 张卡，index 1-6，type 字段保持对应模式的合法值\n6. 只修改用户提到的部分，其他内容保持原样\n\n输出完整的修改后 JSON。` }],
+        parts: [{ text: `你是小红书图文卡片编辑器。用户已经生成了一组 6 张卡片，现在要根据修改意见调整内容。
+
+## 当前卡组 JSON
+
+${JSON.stringify(currentPost, null, 2)}
+
+## 用户的修改意见
+
+${feedback}
+
+## 修改规则
+
+1. **最重要：严格按用户意见修改，不要自由发挥，不要改用户没提到的部分**
+2. 用户说"某个内容分成两页/两张" → 把该内容拆到两张卡片中，重新分配 6 张卡的内容（总数固定 6 张）
+3. 用户说"改标题/改文案" → 只改对应字段的文字
+4. 用户说"加上XX信息" → 在对应卡片中补充该信息
+5. 用户说"背景色/颜色" → 注意背景色由前端控制，你无法修改，请告知用户
+6. mode 不变，固定 6 张卡，index 1-6
+7. type 字段必须是合法值：
+   - vibe 模式: vibe-cover, vibe-story, vibe-tools, vibe-how, vibe-results, vibe-outro
+   - handbook 模式: hb-cover, hb-intro, hb-detail, hb-data, hb-flow, hb-conclusion
+8. 每张卡的字段必须符合其 type 对应的模板要求
+
+输出完整的修改后 JSON，格式与输入相同。` }],
       },
     ],
     config: {
