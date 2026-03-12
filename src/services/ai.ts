@@ -156,7 +156,7 @@ export async function generateXHSPost(
     contents: [
       {
         role: 'user',
-        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n请将以下内容转化为小红书知识手册卡组：${modeHint}\n\n${article}` }],
+        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n请将以下内容转化为小红书图文卡组：${modeHint}\n\n${article}` }],
       },
     ],
     config: {
