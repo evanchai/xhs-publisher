@@ -183,7 +183,7 @@ export default function App() {
         </div>
       </header>
 
-      <main style={{ maxWidth: 960, margin: '0 auto', padding: '32px 24px' }}>
+      <main style={{ maxWidth: post ? 1200 : 960, margin: '0 auto', padding: '32px 24px' }}>
         {!post ? (
           <div style={{ maxWidth: 560, margin: '0 auto' }}>
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -235,28 +235,9 @@ export default function App() {
             )}
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
-            {/* Toolbar */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 16 }}>
-              <button
-                onClick={handleDownloadAll}
-                disabled={exporting}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '8px 20px',
-                  border: '1px solid #5e7050', color: '#5e7050',
-                  borderRadius: 100, background: 'transparent', cursor: 'pointer',
-                  fontSize: 11, letterSpacing: '0.06em',
-                  opacity: exporting ? 0.5 : 1,
-                }}
-              >
-                <Download size={13} />
-                {exporting ? '导出中...' : `下载全部 (${post.slides.length}张)`}
-              </button>
-            </div>
-
-            {/* Slide viewer */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
+          <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
+            {/* Left: Slide viewer */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20, flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
                 <button
                   onClick={() => navigate(-1)}
@@ -325,6 +306,72 @@ export default function App() {
                   />
                 ))}
               </div>
+
+              {/* Download all */}
+              <button
+                onClick={handleDownloadAll}
+                disabled={exporting}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '8px 20px',
+                  border: '1px solid #5e7050', color: '#5e7050',
+                  borderRadius: 100, background: 'transparent', cursor: 'pointer',
+                  fontSize: 11, letterSpacing: '0.06em',
+                  opacity: exporting ? 0.5 : 1,
+                }}
+              >
+                <Download size={13} />
+                {exporting ? '导出中...' : `下载全部 (${post.slides.length}张)`}
+              </button>
+            </div>
+
+            {/* Right: Caption + Feedback */}
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: 20, position: 'sticky', top: 32 }}>
+              <CaptionPreview post={post} />
+
+              {/* Feedback / Refine */}
+              <div style={{
+                background: '#f6f2ec', border: '1px solid #d4ccc2', borderRadius: 12,
+                padding: 20, display: 'flex', flexDirection: 'column', gap: 12,
+              }}>
+                <label style={{
+                  fontFamily: "'Space Mono', monospace", fontSize: 10,
+                  color: '#6d665c', letterSpacing: '0.16em', textTransform: 'uppercase' as const,
+                }}>
+                  修改建议
+                </label>
+                <textarea
+                  value={feedback}
+                  onChange={e => setFeedback(e.target.value)}
+                  placeholder="例如：封面标题换个说法、第三张卡片加上价格、文案语气再轻松一点..."
+                  style={{
+                    width: '100%', minHeight: 100, background: '#f0ebe4',
+                    border: '1px solid #d4ccc2', borderRadius: 8,
+                    padding: '10px 14px', fontSize: 13, color: '#2e2b26',
+                    resize: 'vertical', outline: 'none', lineHeight: 1.6,
+                    fontFamily: "'Noto Sans SC', sans-serif",
+                  }}
+                />
+                <button
+                  onClick={handleRefine}
+                  disabled={refining || !feedback.trim()}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '8px 20px', fontSize: 11, letterSpacing: '0.06em',
+                    border: '1px solid #5e7050', color: '#5e7050',
+                    borderRadius: 100, background: 'transparent', cursor: 'pointer',
+                    opacity: refining || !feedback.trim() ? 0.4 : 1,
+                    alignSelf: 'flex-start',
+                  }}
+                >
+                  {refining ? 'AI 优化中...' : '根据建议优化'}
+                </button>
+                {error && (
+                  <div style={{ padding: 10, background: 'rgba(220,50,50,0.06)', border: '1px solid rgba(220,50,50,0.15)', borderRadius: 8, color: '#c33', fontSize: 12 }}>
+                    {error}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Hidden slides for export */}
@@ -336,53 +383,6 @@ export default function App() {
                   slide={slide}
                 />
               ))}
-            </div>
-
-            <CaptionPreview post={post} />
-
-            {/* Feedback / Refine */}
-            <div style={{
-              background: '#f6f2ec', border: '1px solid #d4ccc2', borderRadius: 12,
-              padding: 20, display: 'flex', flexDirection: 'column', gap: 12,
-            }}>
-              <label style={{
-                fontFamily: "'Space Mono', monospace", fontSize: 10,
-                color: '#6d665c', letterSpacing: '0.16em', textTransform: 'uppercase' as const,
-              }}>
-                修改建议
-              </label>
-              <textarea
-                value={feedback}
-                onChange={e => setFeedback(e.target.value)}
-                placeholder="例如：封面标题换个说法、第三张卡片加上价格、文案语气再轻松一点..."
-                style={{
-                  width: '100%', minHeight: 80, background: '#f0ebe4',
-                  border: '1px solid #d4ccc2', borderRadius: 8,
-                  padding: '10px 14px', fontSize: 13, color: '#2e2b26',
-                  resize: 'vertical', outline: 'none', lineHeight: 1.6,
-                  fontFamily: "'Noto Sans SC', sans-serif",
-                }}
-              />
-              <div style={{ display: 'flex', gap: 8 }}>
-                <button
-                  onClick={handleRefine}
-                  disabled={refining || !feedback.trim()}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 6,
-                    padding: '8px 20px', fontSize: 11, letterSpacing: '0.06em',
-                    border: '1px solid #5e7050', color: '#5e7050',
-                    borderRadius: 100, background: 'transparent', cursor: 'pointer',
-                    opacity: refining || !feedback.trim() ? 0.4 : 1,
-                  }}
-                >
-                  {refining ? 'AI 优化中...' : '根据建议优化'}
-                </button>
-              </div>
-              {error && (
-                <div style={{ padding: 10, background: 'rgba(220,50,50,0.06)', border: '1px solid rgba(220,50,50,0.15)', borderRadius: 8, color: '#c33', fontSize: 12 }}>
-                  {error}
-                </div>
-              )}
             </div>
           </div>
         )}
