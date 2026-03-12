@@ -205,7 +205,7 @@ export default function App() {
             <ArticleInput
               value={article}
               onChange={setArticle}
-              onGenerate={handleGenerate}
+              onGenerate={() => handleGenerate()}
               loading={loading}
             />
             {error && (
