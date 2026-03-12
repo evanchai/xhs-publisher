@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { Download, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react'
 import type { XHSPost } from './types'
-import { generateXHSPost } from './services/ai'
+import { generateXHSPost, refineXHSPost } from './services/ai'
 import { downloadAllSlides, exportSlideAsImage, downloadImage } from './services/export'
 import ArticleInput from './components/ArticleInput'
 import SlideRenderer from './components/SlideRenderer'
@@ -62,6 +62,8 @@ export default function App() {
   const [exporting, setExporting] = useState(false)
   const [activeSlide, setActiveSlide] = useState(0)
   const [mode, setMode] = useState<'auto' | 'vibe' | 'handbook'>('auto')
+  const [feedback, setFeedback] = useState('')
+  const [refining, setRefining] = useState(false)
   const slideRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const handleGenerate = useCallback(async (text?: string) => {
@@ -104,10 +106,28 @@ export default function App() {
     downloadImage(dataUrl, `slide_${index + 1}.png`)
   }, [])
 
+  const handleRefine = useCallback(async () => {
+    if (!post || !feedback.trim()) return
+    setRefining(true)
+    setError('')
+    try {
+      const result = await refineXHSPost(post, feedback)
+      setPost(result)
+      setActiveSlide(0)
+      slideRefs.current = []
+      setFeedback('')
+    } catch (e) {
+      setError(e instanceof Error ? e.message : '优化失败，请重试')
+    } finally {
+      setRefining(false)
+    }
+  }, [post, feedback])
+
   const handleReset = useCallback(() => {
     setPost(null)
     setArticle(DEFAULT_ARTICLE)
     setError('')
+    setFeedback('')
     setActiveSlide(0)
   }, [])
 
@@ -319,6 +339,51 @@ export default function App() {
             </div>
 
             <CaptionPreview post={post} />
+
+            {/* Feedback / Refine */}
+            <div style={{
+              background: '#f6f2ec', border: '1px solid #d4ccc2', borderRadius: 12,
+              padding: 20, display: 'flex', flexDirection: 'column', gap: 12,
+            }}>
+              <label style={{
+                fontFamily: "'Space Mono', monospace", fontSize: 10,
+                color: '#6d665c', letterSpacing: '0.16em', textTransform: 'uppercase' as const,
+              }}>
+                修改建议
+              </label>
+              <textarea
+                value={feedback}
+                onChange={e => setFeedback(e.target.value)}
+                placeholder="例如：封面标题换个说法、第三张卡片加上价格、文案语气再轻松一点..."
+                style={{
+                  width: '100%', minHeight: 80, background: '#f0ebe4',
+                  border: '1px solid #d4ccc2', borderRadius: 8,
+                  padding: '10px 14px', fontSize: 13, color: '#2e2b26',
+                  resize: 'vertical', outline: 'none', lineHeight: 1.6,
+                  fontFamily: "'Noto Sans SC', sans-serif",
+                }}
+              />
+              <div style={{ display: 'flex', gap: 8 }}>
+                <button
+                  onClick={handleRefine}
+                  disabled={refining || !feedback.trim()}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '8px 20px', fontSize: 11, letterSpacing: '0.06em',
+                    border: '1px solid #5e7050', color: '#5e7050',
+                    borderRadius: 100, background: 'transparent', cursor: 'pointer',
+                    opacity: refining || !feedback.trim() ? 0.4 : 1,
+                  }}
+                >
+                  {refining ? 'AI 优化中...' : '根据建议优化'}
+                </button>
+              </div>
+              {error && (
+                <div style={{ padding: 10, background: 'rgba(220,50,50,0.06)', border: '1px solid rgba(220,50,50,0.15)', borderRadius: 8, color: '#c33', fontSize: 12 }}>
+                  {error}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </main>

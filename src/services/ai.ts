@@ -169,3 +169,34 @@ export async function generateXHSPost(
   const parsed = JSON.parse(text) as XHSPost
   return parsed
 }
+
+export async function refineXHSPost(
+  currentPost: XHSPost,
+  feedback: string,
+): Promise<XHSPost> {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY as string | undefined
+  if (!apiKey) {
+    throw new Error('请在 .env.local 中配置 VITE_GEMINI_API_KEY')
+  }
+
+  const { GoogleGenAI } = await import('@google/genai')
+  const ai = new GoogleGenAI({ apiKey })
+
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: [
+      {
+        role: 'user',
+        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n以下是当前生成的小红书卡组 JSON：\n\n${JSON.stringify(currentPost, null, 2)}\n\n---\n\n用户对当前结果的修改意见：\n${feedback}\n\n请根据用户意见修改卡组内容，保持相同的 mode 和整体结构，只调整用户提到的部分。输出完整的修改后 JSON。` }],
+      },
+    ],
+    config: {
+      responseMimeType: 'application/json',
+      temperature: 0.7,
+    },
+  })
+
+  const text = response.text ?? ''
+  const parsed = JSON.parse(text) as XHSPost
+  return parsed
+}
