@@ -189,6 +189,24 @@ export async function refineXHSPost(
         role: 'user',
         parts: [{ text: `你是小红书图文卡片编辑器。用户已经生成了一组 6 张卡片，现在要根据修改意见调整内容。
 
+## 卡片类型与字段规格
+
+### Vibe 模式（6种 type）
+- **vibe-cover**: tagLine, title, titleEm, coverSub, bottomLabel, bottomItems[]
+- **vibe-story**: tagLine, displayTitleL1, displayTitleL2, displayTitleEm, story, quote, quoteEm, bridge
+- **vibe-tools**: tagLine, title, titleEm, steps[{title,desc}] (3个)
+- **vibe-how**: tagLine, title, titleEm, body, checks[] (4个字符串), footnote
+- **vibe-results**: tagLine, title, titleEm, story, stats[{value,label}] (3个), quote, quoteEm
+- **vibe-outro**: tagLine, displayTitleL1, displayTitleEm, body, tools[] (3个), preview, cta
+
+### Handbook 模式（6种 type）
+- **hb-cover**: 同 vibe-cover 字段
+- **hb-intro**: tagLine, sectionTitle, body, bullets[{bold,text}] (3个), subtitle, stats[{value,label}] (3个), highlightText
+- **hb-detail**: tagLine, sectionTitle, tiers[{title,body}] (2个), subtitle, bullets[{bold,text}] (3个)
+- **hb-data**: tagLine, sectionTitle, body, dataItems[{tag,description,size,barPercent}] (3个), subtitle, bullets[{bold,text}] (2个), highlightText
+- **hb-flow**: tagLine, sectionTitle, flowNodes[{label,name,variant}] (4个), body, subtitle, highlightText, checkItems[{text,tag}] (3个)
+- **hb-conclusion**: tagLine, displayTitleL1, displayTitleEm, body, tools[] (3个), preview, cta
+
 ## 当前卡组 JSON
 
 ${JSON.stringify(currentPost, null, 2)}
@@ -203,12 +221,8 @@ ${feedback}
 2. 用户说"某个内容分成两页/两张" → 把该内容拆到两张卡片中，重新分配 6 张卡的内容（总数固定 6 张）
 3. 用户说"改标题/改文案" → 只改对应字段的文字
 4. 用户说"加上XX信息" → 在对应卡片中补充该信息
-5. 用户说"背景色/颜色" → 注意背景色由前端控制，你无法修改，请告知用户
-6. mode 不变，固定 6 张卡，index 1-6
-7. type 字段必须是合法值：
-   - vibe 模式: vibe-cover, vibe-story, vibe-tools, vibe-how, vibe-results, vibe-outro
-   - handbook 模式: hb-cover, hb-intro, hb-detail, hb-data, hb-flow, hb-conclusion
-8. 每张卡的字段必须符合其 type 对应的模板要求
+5. mode 不变，固定 6 张卡，index 1-6
+6. type 字段必须严格使用上面列出的合法值，字段必须符合对应 type 的规格
 
 输出完整的修改后 JSON，格式与输入相同。` }],
       },
