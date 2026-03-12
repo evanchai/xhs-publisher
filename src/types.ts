@@ -1,7 +1,7 @@
 export type CardMode = 'vibe' | 'handbook'
 
 /** Background color rotation — no adjacent cards share same bg */
-export const BG_CYCLE = ['#f0ebe4', '#f6f2ec', '#e7e0d6', '#f6f2ec', '#f0ebe4', '#e7e0d6'] as const
+export const BG_CYCLE = ['#f0ebe4', '#f6f2ec', '#ffffff', '#f6f2ec', '#f0ebe4', '#e7e0d6'] as const
 
 // ── Vibe Diary mode ──
 export type VibeSlideType = 'vibe-cover' | 'vibe-story' | 'vibe-tools' | 'vibe-how' | 'vibe-results' | 'vibe-outro'

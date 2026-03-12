@@ -187,7 +187,7 @@ export async function refineXHSPost(
     contents: [
       {
         role: 'user',
-        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n以下是当前生成的小红书卡组 JSON：\n\n${JSON.stringify(currentPost, null, 2)}\n\n---\n\n用户对当前结果的修改意见：\n${feedback}\n\n请根据用户意见修改卡组内容，保持相同的 mode 和整体结构，只调整用户提到的部分。输出完整的修改后 JSON。` }],
+        parts: [{ text: `${SYSTEM_PROMPT}\n\n---\n\n以下是当前生成的小红书卡组 JSON：\n\n${JSON.stringify(currentPost, null, 2)}\n\n---\n\n用户对当前结果的修改意见：\n${feedback}\n\n## 修改规则\n\n1. 严格按用户意见修改，不要自由发挥\n2. 用户说"某个内容分成两页"→ 把该内容拆到两张卡片中，重新分配 6 张卡的内容结构\n3. 用户说"改标题/改文案"→ 只改对应字段的文字\n4. 用户说"加上XX信息"→ 在对应卡片中补充该信息\n5. 保持 mode 不变，固定 6 张卡，index 1-6，type 字段保持对应模式的合法值\n6. 只修改用户提到的部分，其他内容保持原样\n\n输出完整的修改后 JSON。` }],
       },
     ],
     config: {
