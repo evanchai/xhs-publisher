@@ -82,6 +82,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const origin = req.headers.origin || req.headers.referer || '';
+  if (!origin.includes('xhs-publisher') && !origin.includes('localhost')) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: "API key not configured" });
